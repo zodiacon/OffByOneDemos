@@ -54,6 +54,7 @@ NTSTATUS OnDeviceControl(PDEVICE_OBJECT, PIRP irp) {
 
 		case IOCTL_KSIMPLE_READ:
 			read = true;
+			[[fallthrough]];
 		case IOCTL_KSIMPLE_WRITE:
 			if (dic.InputBufferLength < sizeof(KSimpleReadWrite)) {
 				status = STATUS_BUFFER_TOO_SMALL;

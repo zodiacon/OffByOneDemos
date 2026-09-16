@@ -3,6 +3,9 @@
     <Platform Name="ARM64" />
     <Platform Name="x64" />
   </Configurations>
+  <Project Path="CopyToken/CopyToken.vcxproj" Id="6183156b-4800-4db5-8fd3-83caaaa047be">
+    <Platform Project="x64" />
+  </Project>
   <Project Path="KSimple/KSimple.vcxproj">
     <Deploy />
   </Project>
