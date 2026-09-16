@@ -1,5 +1,9 @@
+#define KSIMPLE_SECURE
 #include <ntifs.h>
 #include "KSimpleComnon.h"
+#ifdef KSIMPLE_SECURE
+#include <wdmsec.h>
+#endif
 
 #define KSIMPLE_PREFIX "KSimple: "
 #define KSIMPLE_NAME L"KSimple"
@@ -89,7 +93,12 @@ extern "C" NTSTATUS DriverEntry(PDRIVER_OBJECT drvObj, PUNICODE_STRING regPath) 
 
 	UNICODE_STRING devName = RTL_CONSTANT_STRING(L"\\Device\\" KSIMPLE_NAME);
 	PDEVICE_OBJECT devObj;
-	auto status = IoCreateDevice(drvObj, 0, &devName, FILE_DEVICE_UNKNOWN, 0, FALSE, &devObj);
+	auto status = 
+#ifdef KSIMPLE_SECURE
+	IoCreateDeviceSecure(drvObj, 0, &devName, FILE_DEVICE_UNKNOWN, 0, FALSE, &SDDL_DEVOBJ_SYS_ALL_ADM_ALL, nullptr, &devObj);
+#else
+	IoCreateDevice(drvObj, 0, &devName, FILE_DEVICE_UNKNOWN, 0, FALSE, &devObj);
+#endif
 	if (!NT_SUCCESS(status)) {
 		DbgPrint(KSIMPLE_PREFIX "Failed to create device (0x%X)\n", status);
 		return status;

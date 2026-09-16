@@ -15,11 +15,11 @@ PVOID GetProcessAddress(HANDLE hProcess) {
 		return nullptr;
 	if (STATUS_SUCCESS != NtQuerySystemInformation(SystemExtendedHandleInformation, buf, size, &size))
 		return nullptr;
-	
+
 	for (ULONG_PTR i = 0; i < buf->NumberOfHandles; i++) {
 		auto& handle = buf->Handles[i];
 		if (HandleToUlong(handle.UniqueProcessId) == GetCurrentProcessId() && handle.HandleValue == hProcess) {
-				return handle.Object;
+			return handle.Object;
 		}
 	}
 	return nullptr;
@@ -84,7 +84,7 @@ int main(int argc, const char* argv[]) {
 		token |= (orgToken & 0xf) + 1;
 		success = DeviceIoControl(hDevice, IOCTL_KSIMPLE_WRITE, &rw, sizeof(rw), &token, sizeof(token), &ret, nullptr);
 	}
-	if(success) {
+	if (success) {
 		printf("Success.\n");
 	}
 	else {
