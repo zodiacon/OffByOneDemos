@@ -10,7 +10,7 @@
 
 bool EnablePrivilege(PCWSTR privName, bool enable = true) {
 	HANDLE hToken;
-	if (!OpenProcessToken(::GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES, &hToken))
+	if (!OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES, &hToken))
 		return false;
 
 	bool result = false;
@@ -30,16 +30,20 @@ PVOID GetProcessAddress(HANDLE hProcess) {
 	auto buf = (SYSTEM_HANDLE_INFORMATION_EX*)VirtualAlloc(nullptr, size, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
 	if (!buf)
 		return nullptr;
-	if (STATUS_SUCCESS != NtQuerySystemInformation(SystemExtendedHandleInformation, buf, size, &size))
-		return nullptr;
+	PVOID address = nullptr;
 
-	for (ULONG_PTR i = 0; i < buf->NumberOfHandles; i++) {
-		auto& handle = buf->Handles[i];
-		if (HandleToUlong(handle.UniqueProcessId) == GetCurrentProcessId() && handle.HandleValue == hProcess) {
-			return handle.Object;
+	if (STATUS_SUCCESS == NtQuerySystemInformation(SystemExtendedHandleInformation, buf, size, &size)) {
+		for (ULONG_PTR i = 0; i < buf->NumberOfHandles; i++) {
+			auto& handle = buf->Handles[i];
+			if (HandleToUlong(handle.UniqueProcessId) == GetCurrentProcessId() && handle.HandleValue == hProcess) {
+				address = handle.Object;
+				break;
+			}
 		}
 	}
-	return nullptr;
+	VirtualFree(buf, 0, MEM_RELEASE);
+
+	return address;
 }
 
 int main(int argc, const char* argv[]) {
