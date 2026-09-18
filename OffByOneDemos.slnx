@@ -3,16 +3,18 @@
     <Platform Name="ARM64" />
     <Platform Name="x64" />
   </Configurations>
-  <Project Path="CopyToken/CopyToken.vcxproj" Id="6183156b-4800-4db5-8fd3-83caaaa047be">
-    <Platform Project="x64" />
-  </Project>
-  <Project Path="KSimple/KSimple.vcxproj">
-    <Deploy />
-  </Project>
-  <Project Path="Protect/Protect.vcxproj" Id="1ad286ea-12dc-4ea3-9c6e-6b86ca357c06">
-    <Platform Project="x64" />
-  </Project>
-  <Project Path="ReadWrite/ReadWrite.vcxproj" Id="45ad7533-b72f-4531-84a8-57203556c455">
-    <Platform Project="x64" />
-  </Project>
+  <Folder Name="/Demos/">
+    <Project Path="CopyToken/CopyToken.vcxproj" Id="6183156b-4800-4db5-8fd3-83caaaa047be">
+      <Platform Project="x64" />
+    </Project>
+    <Project Path="KSimple/KSimple.vcxproj">
+      <Deploy />
+    </Project>
+    <Project Path="Protect/Protect.vcxproj" Id="1ad286ea-12dc-4ea3-9c6e-6b86ca357c06">
+      <Platform Project="x64" />
+    </Project>
+    <Project Path="ReadWrite/ReadWrite.vcxproj" Id="45ad7533-b72f-4531-84a8-57203556c455">
+      <Platform Project="x64" />
+    </Project>
+  </Folder>
 </Solution>

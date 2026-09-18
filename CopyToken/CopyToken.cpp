@@ -8,6 +8,23 @@
 
 #pragma comment(lib, "ntdll")
 
+bool EnablePrivilege(PCWSTR privName, bool enable = true) {
+	HANDLE hToken;
+	if (!OpenProcessToken(::GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES, &hToken))
+		return false;
+
+	bool result = false;
+	TOKEN_PRIVILEGES tp;
+	tp.PrivilegeCount = 1;
+	tp.Privileges[0].Attributes = enable ? SE_PRIVILEGE_ENABLED : 0;
+	if (LookupPrivilegeValue(nullptr, privName, &tp.Privileges[0].Luid) &&
+		AdjustTokenPrivileges(hToken, FALSE, &tp, sizeof(tp), nullptr, nullptr)) {
+		result = GetLastError() == ERROR_SUCCESS;
+	}
+	CloseHandle(hToken);
+	return result;
+}
+
 PVOID GetProcessAddress(HANDLE hProcess) {
 	ULONG size = 1 << 24;
 	auto buf = (SYSTEM_HANDLE_INFORMATION_EX*)VirtualAlloc(nullptr, size, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
@@ -30,6 +47,8 @@ int main(int argc, const char* argv[]) {
 		printf("Usage: copytoken <src_pid> <dst_pid>\n");
 		return 0;
 	}
+
+	EnablePrivilege(SE_DEBUG_NAME);
 
 	auto hDevice = CreateFile(L"\\\\.\\KSimple", GENERIC_WRITE, 0, nullptr, OPEN_EXISTING, 0, nullptr);
 	if (hDevice == INVALID_HANDLE_VALUE) {

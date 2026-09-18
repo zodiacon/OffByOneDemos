@@ -1,4 +1,4 @@
-#define KSIMPLE_SECURE
+//#define KSIMPLE_SECURE
 #include <ntifs.h>
 #include "KSimpleComnon.h"
 #ifdef KSIMPLE_SECURE
